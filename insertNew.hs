@@ -10,7 +10,7 @@ startingRow = 200
 
 statement :: [[String]] -> String
 statement xss = 
-  "insert into locations (tower_id, label, row, lane, depth, level, products_allowed, sort_weight, is_active, is_equipment, created_on, created_by, modified_on, modified_by, creator_id, updater_id)\nvalues " ++ (intercalate ",\n" (groups xss)) ++ ";"
+  "insert into locations (tower_id, label, row, lane, depth, level, products_allowed, sort_weight, is_active, is_equipment, created_on, created_by, modified_on, modified_by, creator_id, updater_id) values\n" ++ (intercalate ",\n" (groups xss)) ++ ";"
     where
       wrapVal x = if x == "null" then "null" else "'" ++ x ++ "'"
       groups = map $ \xs ->
