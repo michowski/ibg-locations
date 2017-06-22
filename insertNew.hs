@@ -10,9 +10,17 @@ startingRow = 200
 
 statement :: [[String]] -> String
 statement xss = 
-  "insert into locations (tower_id, label, row, lane, depth, level, products_allowed, sort_weight, is_active, is_equipment, created_on, created_by, modified_on, modified_by, creator_id, updater_id) values\n" ++ (intercalate ",\n" (groups xss)) ++ ";"
+  "insert into locations \
+  \(tower_id, label, row, lane, depth, level, products_allowed, sort_weight, is_active\
+  \, is_equipment, created_on, created_by, modified_on, modified_by, creator_id, updater_id)\
+  \values\n"
+  ++ intercalate ",\n" (groups xss) ++ ";"
     where
-      wrapVal x = if x == "null" then "null" else "'" ++ x ++ "'"
+      wrapVal x = 
+        if x == "null"
+        then "null"
+        else "'" ++ x ++ "'"
+
       groups = map $ \xs ->
         "(" ++ (intercalate ", " $ map wrapVal xs) ++ ")"
 
@@ -33,11 +41,11 @@ levels = [0..3]
 locations :: [Location]
 locations = zip [startingRow..] prefixes >>= \(r, p) ->
   depths >>= \d ->
-    (<$> levels) $ \l ->
+    flip map levels $ \l ->
       (p, d, l, r)
 
 values :: [[String]]
-values = (<$> locations) $ \(p, d, l, r) ->
+values = flip map locations $ \(p, d, l, r) ->
   let
     tower = p ++ "-" ++ toNumber d
   in
